@@ -1,0 +1,53 @@
+version: '3'
+services:
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo_store_container
+    volumes:
+      - ./mongo:/data/db
+      - ./docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+    environment:
+      # to user admin
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+      - MONGO_INITDB_DATABASE=link_tracker_starter
+      - MONGO_SYNCRONIZE_DATABASE=true
+    expose:
+      - 27017
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+
+    networks:
+      - link_tracker_starter_network
+
+  backend:
+    image: link_tracker_starter:v0.0.0
+    build:
+      context: .
+      target: development
+    container_name: link_tracker_starter_container
+    ports:
+      - '4000:4000'
+    environment:
+      - NODE_ENV=development
+      - MONGO_DB_HOST=mongo
+      - MONGO_DB_NAME=link_tracker_starter
+      - MONGO_DB_USERNAME=root
+      - MONGO_DB_PASSWORD=pass
+      - AUTHSOURCE_DB_PASSWORD=admin
+    depends_on:
+      - mongo
+    volumes:
+      - .:/app
+    command: yarn start:dev
+    networks:
+      - link_tracker_starter_network
+
+volumes:
+  mongo:
+
+networks:
+  link_tracker_starter_network:
+    driver: bridge
