@@ -98,12 +98,12 @@ describe('AppController', () => {
 
   describe('createLinkTracker', () => {
     it('should create a link tracker and return the expected DTO', async () => {
+      jest.spyOn(appService, 'newMaskedLink').mockReturnValue('l/abcde');
+
       const result = await appService.createLinkTracker(
         mockRequest,
         mockCreated,
       );
-
-      result.link = mockCreated.link;
 
       const expectedLinkTrackerDto: LinkTrackerDto = {
         id: '2',
@@ -111,7 +111,7 @@ describe('AppController', () => {
         valid: true,
         password: null,
         expiration: '2024-10-04',
-        link: mockCreated.link,
+        link: 'http://localhost:4000/l/abcde',
         visited: 0,
       };
 
