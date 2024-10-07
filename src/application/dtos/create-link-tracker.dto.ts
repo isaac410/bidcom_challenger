@@ -14,13 +14,13 @@ export class CreateLinkTrackerDto {
   valid: boolean;
 
   @ApiProperty({ example: 'mysecurypassword' })
-  password: string;
+  password?: string;
 
   @Matches(/^\d{4}-\d{2}-\d{2}$/, {
     message: 'The date must be in YYYYY-MM-DD format.',
   })
-  @ApiProperty({ example: '2024-10-04' })
+  @ApiProperty({ example: '2024-12-31' })
   expiration: string;
 
-  link: string;
+  link?: string;
 }

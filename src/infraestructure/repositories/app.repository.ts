@@ -5,8 +5,8 @@ import {
   LinkTracker,
   LinkTrackerDocument,
 } from '../schemas/link-tracker.schema';
-import { CreateLinkTrackerDto } from 'src/application/dtos/create-link-tracker.dto';
-import AbstractAppRepository from 'src/domain/repositories/abstract-app.repository';
+import { CreateLinkTrackerDto } from '../../application/dtos/create-link-tracker.dto';
+import AbstractAppRepository from '../../domain/repositories/abstract-app.repository';
 
 export default class AppRepository implements AbstractAppRepository {
   constructor(

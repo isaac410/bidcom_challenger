@@ -12,7 +12,7 @@ import { CreateLinkTrackerDto } from '../dtos/create-link-tracker.dto';
 
 import AbstractAppService from './abstract-app.service';
 import { IHealthStatus } from '../../domain/interfaces/health.interface';
-import AbstractAppRepository from 'src/domain/repositories/abstract-app.repository';
+import AbstractAppRepository from '../../domain/repositories/abstract-app.repository';
 
 @Injectable()
 export default class AppService extends AbstractAppService {
@@ -80,14 +80,16 @@ export default class AppService extends AbstractAppService {
     password: string,
   ): Promise<{ url: string }> {
     try {
+      console.log('link', link);
       const linkTracker = await this.findLinkTrackerByLink(request, link);
+      console.log('linkTracker', linkTracker);
 
       if (linkTracker.expiration) {
         const currentDate = new Date();
         const expirationDate = new Date(linkTracker.expiration);
         if (currentDate > expirationDate)
           throw new NotFoundException(
-            `this link (${linkTracker.link}) not found`,
+            `this link (${linkTracker.link}) has expired`,
           );
       }
 
@@ -123,11 +125,13 @@ export default class AppService extends AbstractAppService {
     try {
       const hostedLink = `${this.getHost(request)}/l/${link}`;
       const cleanedUrl = hostedLink.replace('/api', '');
+
       const linkTracker = await this.repository.findOneByKey(
         'link',
         cleanedUrl,
       );
-      if (!linkTracker || !linkTracker.valid)
+
+      if (!linkTracker || linkTracker.valid === false)
         throw new NotFoundException(`this link (${hostedLink}) not found`);
       const linkTrackerTransformed = plainToInstance(
         LinkTrackerDto,
@@ -191,7 +195,6 @@ export default class AppService extends AbstractAppService {
       excludePrefixes: ['__'],
     });
 
-    console.log('linkInvalid', linkInvalid);
     const linkInvalidUpdated = await this.updateOneById(
       linkInvalid.id,
       linkInvalid,
@@ -201,7 +204,7 @@ export default class AppService extends AbstractAppService {
     });
   }
 
-  private newMaskedLink(): string {
+  newMaskedLink(): string {
     let cadenaAleatoria = '';
     const caracteres = 'abcdefghijklmnopqrstuvwxyz';
     for (let i = 0; i < 5; i++) {
@@ -212,7 +215,7 @@ export default class AppService extends AbstractAppService {
     return `l/${cadenaAleatoria}`;
   }
 
-  private getHost(request: Request): string {
+  getHost(request: Request): string {
     const host = request.get('host');
     const protocol = request.protocol;
     return `${protocol}://${host}`;

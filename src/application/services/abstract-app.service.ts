@@ -118,4 +118,8 @@ export default abstract class AbstractAppService {
     request: Request,
     link: string,
   ): Promise<LinkTrackerDto>;
+
+  abstract getHost(request: Request): string;
+
+  abstract newMaskedLink(): string;
 }
