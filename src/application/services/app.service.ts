@@ -80,9 +80,7 @@ export default class AppService extends AbstractAppService {
     password: string,
   ): Promise<{ url: string }> {
     try {
-      console.log('link', link);
       const linkTracker = await this.findLinkTrackerByLink(request, link);
-      console.log('linkTracker', linkTracker);
 
       if (linkTracker.expiration) {
         const currentDate = new Date();
