@@ -1,8 +1,8 @@
 import { Request } from 'express';
 
 import { LinkTrackerDto } from '../dtos/link-tracker.dto';
+import { HealthStatusDto } from '../dtos/health-status.dto';
 import { CreateLinkTrackerDto } from '../dtos/create-link-tracker.dto';
-import { IHealthStatus } from '../../domain/interfaces/health.interface';
 
 export default abstract class AbstractAppService {
   /**
@@ -11,12 +11,12 @@ export default abstract class AbstractAppService {
    * the current timestamp, and the uptime of the application in seconds.
    * @example const healthStatus = this.appService.getHealth();
    * @returns An object containing the health status of the application.
-   * @returns {IHealthStatus} The health status object.
+   * @returns {HealthStatusDto} The health status object.
    * @returns {string} returns.message
    * @returns {number} returns.timestamp
    * @returns {number} returns.uptime
    */
-  abstract getHealth(): IHealthStatus;
+  abstract getHealth(): HealthStatusDto;
 
   /**
    * @description Creates a new link tracker based on the provided data transfer object.

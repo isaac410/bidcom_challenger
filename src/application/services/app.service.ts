@@ -8,10 +8,10 @@ import {
 import { plainToInstance } from 'class-transformer';
 
 import { LinkTrackerDto } from '../dtos/link-tracker.dto';
+import { HealthStatusDto } from '../dtos/health-status.dto';
 import { CreateLinkTrackerDto } from '../dtos/create-link-tracker.dto';
 
 import AbstractAppService from './abstract-app.service';
-import { IHealthStatus } from '../../domain/interfaces/health.interface';
 import AbstractAppRepository from '../../domain/repositories/abstract-app.repository';
 
 @Injectable()
@@ -22,12 +22,12 @@ export default class AppService extends AbstractAppService {
     super();
   }
 
-  getHealth(): IHealthStatus {
+  getHealth(): HealthStatusDto {
     return {
       message: 'OK',
       timestamp: Date.now(),
       uptime: process.uptime(),
-    };
+    } as HealthStatusDto;
   }
 
   async createLinkTracker(
@@ -105,7 +105,7 @@ export default class AppService extends AbstractAppService {
         },
       );
 
-      await this.updateOneById(linkIncrementUpdated.id, linkIncrementUpdated);
+      await this.updateOneById(linkTracker.id, linkIncrementUpdated);
       return { url: linkTracker.target };
     } catch (error) {
       this.logger.error(
